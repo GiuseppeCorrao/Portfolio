@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Portfolio</title>
+    <style>
+        /* RESET CSS E STILI BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Gradiente di sfondo principale con varie tonalità di viola */
+            background: linear-gradient(135deg,
+                    #667eea 0%,
+                    #764ba2 25%,
+                    #8e44ad 50%,
+                    #9b59b6 75%,
+                    #bb6bd9 100%);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* CONTAINER PRINCIPALE */
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        /* STILI GENERALI DELLE CARD */
+        .card {
+            /* Sfondo con gradiente viola traslucido */
+            background: linear-gradient(145deg,
+                    rgba(102, 126, 234, 0.1) 0%,
+                    rgba(155, 89, 182, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            /* Effetto vetro sfocato */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                0 4px 16px rgba(139, 69, 19, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Effetto hover sulle card */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.15),
+                0 6px 20px rgba(139, 69, 19, 0.1);
+        }
+
+        /* Effetto di sfondo animato per le card */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent 30%,
+                    rgba(255, 255, 255, 0.05) 50%,
+                    transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        /* CARD DEL PROFILO PRINCIPALE */
+        .profile-card {
+            grid-column: span 2;
+            /* Occupa 2 colonne */
+            text-align: center;
+            background: linear-gradient(145deg,
+                    rgba(147, 112, 219, 0.15) 0%,
+                    rgba(138, 43, 226, 0.15) 100%);
+        }
+
+        /* Contenitore per la foto profilo */
+        .profile-image {
+            width: 30%;
+            height: auto;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Placeholder per la foto se non è presente */
+        .image-placeholder {
+            width: 100%;
+            height: auto;
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        /* TITOLI DELLE SEZIONI */
+        .card-title {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .card-text-div {
+            width: 100%;
+            height: auto;
+            margin: 0 auto 20px;
+            border-radius: 10%;
+            position: relative;
+        }
+
+        /* TESTO GENERALE */
+        .card-text {
+            color: rgba(255, 255, 255, 0.975);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* CONTAINER PER I CERTIFICATI */
+        .certificate-container {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .certificate-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .certificate-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Placeholder per i certificati */
+        .certificate-placeholder {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .certificate-placeholder:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        /* LISTA DELLE COMPETENZE */
+        .skills-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+            justify-items: center;
+        }
+
+        .skill-tag {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+            text-align: center;
+            width: 100%;
+            max-width: 160px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .skill-tag:hover {
+            transform: scale(1.05);
+        }
+
+        /* LISTA DEI PROGETTI */
+        .project-list {
+            list-style: none;
+        }
+
+        .project-item {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #9b59b6;
+            transition: all 0.3s ease;
+        }
+
+        .project-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .project-title {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .project-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .sitelogo {
+            width: 20%;
+            height: auto;
+            position: relative;
+        }
+
+        /* INFORMAZIONI DI CONTATTO */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 10px 0;
+            }
+
+            .profile-card {
+                grid-column: span 1;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 20px;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+
+        /* ANIMAZIONI */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Ritardo progressivo per l'animazione delle card */
+        .card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- DASHBOARD PRINCIPALE -->
+    <div class="dashboard">
+
+        <!-- CARD DEL PROFILO PRINCIPALE -->
+        <div class="card profile-card">
+
+            <div class="profile-image">
+                <!-- 
+                    PERSONALIZZA QUI: Sostituisci il contenuto dell'image-placeholder 
+                    con un tag <img src="tua-foto.jpg" alt="La tua foto"> 
+                -->
+                <img src="img/20240713_181942.jpg" alt="">
+            </div>
+
+            <!-- INFORMAZIONI PERSONALI -->
+            <h1 class="card-title">Giuseppe Corrao</h1> <!-- PERSONALIZZA: Inserisci il tuo nome -->
+            <h2 class="card-subtitle">Sviluppatore Junior</h2> <!-- PERSONALIZZA: La tua professione -->
+            <div class="card-text-div">
+                <p class="card-text" style="margin-top: 15px;">
+                    <!-- PERSONALIZZA: Scrivi una breve descrizione di te stesso -->
+                    Benvenuto nel mio portfolio! Sono uno sviluppatore junior appassionato di tecnologia e
+                    programmazione.
+                    Amo creare soluzioni innovative e migliorare continuamente le mie competenze.
+                    </p>
+                <p class="card-text" style="margin-top: 15px;">
+                    Mi cimento in tutte le attivita' che possano farmi crescere sia a livello personale che
+                    professionale, e' perquesto che oltre a programmare, mi piace insegnare e condividere le mie conoscenze.
+                    </p>
+            </div>
+        </div>
+
+        <!-- CARD DELLE COMPETENZE -->
+        <div class="card">
+            <h3 class="card-title">🚀 Le Mie Competenze</h3>
+
+            <!-- LISTA DELLE COMPETENZE TECNICHE -->
+            <div class="skills-list">
+                <!-- PERSONALIZZA: Aggiungi o modifica le tue competenze -->
+                <span class="skill-tag">Java 8</span>
+                <span class="skill-tag">Spring Boot</span>
+                <span class="skill-tag">javascript</span>
+                <span class="skill-tag">typescript</span>
+                <span class="skill-tag">HTML5</span>
+                <span class="skill-tag">CSS3</span>
+                <span class="skill-tag">SQL Server</span>
+                <span class="skill-tag">Linux</span>
+                <span class="skill-tag">Windows</span>
+                <span class="skill-tag">Git</span>
+                <span class="skill-tag">MongoDB</span>
+                <span class="skill-tag">MySQL</span>
+                <span class="skill-tag">Powershell script</span>
+                <span class="skill-tag">Testing app</span>
+                <span class="skill-tag">AM Finance</span>
+                <span class="skill-tag">XML knowledge</span>
+                <span class="skill-tag">CSV knowledge</span>
+                <span class="skill-tag">Data analyst</span>
+
+            </div>
+        </div>
+
+        <!-- CARD DEI PROGETTI -->
+        <div class="card">
+            <h3 class="card-title">💼 I Miei Riferimenti</h3>
+
+            <!-- LISTA DEI PROGETTI -->
+            <ul class="project-list">
+                <!-- PERSONALIZZA: Aggiungi i tuoi progetti reali -->
+                <li class="project-item" id="project-github">
+                    <div class="project-title">GitHub ☕︎‧₊˚⏱٠࣪⋆😸₊˚ᵎ</div>
+                    <div class="project-description">
+                        Link al mio profilo GitHub con i miei progetti open-source
+                    </div>
+                </li>
+
+                <li class="project-item">
+                    <div class="project-title"> Linkedin 👩🏻‍💻ᝰ.ᐟ</div>
+                    <div class="project-description">
+                       il mio profilo linkedin
+                    </div>
+                </li>
+
+                <li class="project-item">
+                    <div class="project-title">Super Prof ✎ᝰ.📓🗒 ˎˊ˗</div>
+                    <div class="project-description">
+                        Link al mio profilo Super Prof per lezioni private
+                    </div>
+
+                <li class="project-item">
+                    <div class="project-title">Fiverr  ⤷💼ˎˊ˗ </div>
+                    <div class="project-description">
+                        collaboro anche con Fiverr per progetti freelance
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CARD DEL CERTIFICATO DEVELHOPE -->
+        <div class="card">
+            <h3 class="card-title">🎓 Certificato Develhope</h3>
+
+            <div class="certificate-container">
+                <!-- 
+                   IMMAGINE CERTIFICATO
+                -->
+
+                <img src="img/certificato_develhope.png" alt="Certificato Develhope" class="certificate-image">
+            </div>
+            <p class="card-text" style="margin-top: 15px;">
+                <!-- PERSONALIZZA: Descrivi il tuo percorso formativo -->
+                Certificazione completata presso Develhope nel corso di back-end Development.
+                Il programma ha coperto tecnologie moderne come Java 8, Sping-boot e database management.
+            </p>
+        </div>
+
+        <!-- CARD DEI CONTATTI -->
+        <div class="card">
+            <h3 class="card-title">📞 Contattami</h3>
+
+            <div class="contact-info">
+                <!-- PERSONALIZZA: Inserisci i tuoi contatti reali -->
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <span>josephcorr99@gmail.com</span>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <span>+39 3385363255</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD DELLA FORMAZIONE -->
+        <div class="card">
+            <h3 class="card-title">🎯 Formazione</h3>
+
+            <div class="card-text">
+                <!-- PERSONALIZZA: Aggiungi la tua formazione -->
+                <strong>Develhope - Full Stack Development</strong><br>
+                <em>2022</em><br>
+                Corso intensivo di sviluppo back-end con focus su tecnologie moderne come Java 8 e Spring-boot framework.
+                <br><br>
+
+                <strong>Istituto Tecnico Professionare di Ragioneria</strong><br>
+                <em>2020</em><br>
+                ho conseguito il diploma di perito commerciale.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JAVASCRIPT PER L'INTERATTIVITÀ
+
+        // Attendiamo che il DOM sia completamente caricato
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Seleziona tutti gli li con una classe specifica
+            const projectItems = document.querySelectorAll('.project-item');
+
+            projectItems.forEach((item, index) => {
+                item.addEventListener('click', function () {
+                    console.log(`Li ${index} cliccato!`);
+
+                    // Puoi personalizzare il link per ogni progetto
+                    if (index === 0) {
+                        window.open('https://github.com/GiuseppeCorrao', '_blank');
+                    } else if (index === 1) {
+                        window.open('https://www.linkedin.com/in/giuseppe-corrao-8b38a0221/', '_blank');
+                    } else if (index === 2) {
+                        window.open(' https://www.superprof.it/esperienza-nell-ambiente-adesso-insegno-sql-sql-sql-java-base-avanzato-javascript-css-html-trasmetto-conoscenze-anche.html', '_blank');
+                    } else if (index === 3) {
+                        window.open('https://www.fiverr.com/giuseppecorrao', '_blank');
+                    }
+                });
+
+                item.style.cursor = 'pointer';
+            });
+
+            // GESTIONE DEL CLICK SULL'IMMAGINE DEL CERTIFICATO
+            const certificateImg = document.querySelector('.certificate-image');
+
+            if (certificateImg) {
+                certificateImg.addEventListener('click', function () {
+                    console.log('Certificato cliccato!'); // Per debug
+                    window.open('https://www.credential.net/1005d396-c5b0-4f7d-bc0e-c53cd4758be7#acc.ReAu1KVG', '_blank');
+                });
+
+                // Aggiungi stile per indicare che è cliccabile
+                certificateImg.style.cursor = 'pointer';
+            } else {
+                console.log('Immagine certificato non trovata!');
+            }
+            // EFFETTO PARALLAX LEGGERO SULLE CARD
+            // Aggiungiamo un effetto di movimento delle card basato sul movimento del mouse
+            const cards = document.querySelectorAll('.card');
+
+            document.addEventListener('mousemove', function (e) {
+                // Calcoliamo la posizione del mouse rispetto al centro della finestra
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+
+                // Applichiamo un leggero movimento a tutte le card
+                cards.forEach((card, index) => {
+                    // Movimento più leggero per evitare distrazioni
+                    const moveX = (mouseX - 0.5) * 10; // Max 5px di movimento
+                    const moveY = (mouseY - 0.5) * 10; // Max 5px di movimento
+
+                    // Applichiamo la trasformazione con un leggero ritardo per ogni card
+                    setTimeout(() => {
+                        card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    }, index * 50);
+                });
+            });
+
+            // ANIMAZIONE DI ENTRATA DELLE SKILL TAGS
+            // Animiamo l'apparizione dei tag delle competenze in sequenza
+            const skillTags = document.querySelectorAll('.skill-tag');
+
+            // Funzione per animare i tag delle competenze
+            function animateSkills() {
+                skillTags.forEach((tag, index) => {
+                    // Inizialmente rendiamo i tag invisibili
+                    tag.style.opacity = '0';
+                    tag.style.transform = 'translateY(20px)';
+
+                    // Animiamo ogni tag con un ritardo progressivo
+                    setTimeout(() => {
+                        tag.style.transition = 'all 0.5s ease';
+                        tag.style.opacity = '1';
+                        tag.style.transform = 'translateY(0)';
+                    }, index * 100); // Ritardo di 100ms tra ogni tag
+                });
+            }
+
+            // Avviamo l'animazione delle competenze dopo 1 secondo
+            setTimeout(animateSkills, 1000);
+
+            // EFFETTO TYPING PER IL TITOLO PRINCIPALE
+            // Creiamo un effetto di scrittura automatica per il titolo
+            function createTypingEffect(element, text, speed = 100) {
+                let i = 0;
+                element.textContent = '';
+
+                function typeWriter() {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, speed);
+                    }
+                }
+
+                typeWriter();
+            }
+
+            // Applichiamo l'effetto typing al titolo principale
+            const mainTitle = document.querySelector('.profile-card .card-title');
+            const originalText = mainTitle.textContent;
+
+            // Avviamo l'effetto dopo un breve ritardo
+            setTimeout(() => {
+                createTypingEffect(mainTitle, originalText, 150);
+            }, 500);
+
+            // GESTIONE DEL SCROLL SMOOTH E ANIMAZIONI
+            // Aggiungiamo animazioni quando gli elementi entrano nella viewport
+            const observerOptions = {
+                threshold: 0.1, // L'elemento deve essere visibile al 10%
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            // Creiamo un osservatore per le animazioni di scroll
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Aggiungiamo una classe per attivare l'animazione
+                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, observerOptions);
+
+            // Osserviamo tutte le card per le animazioni di scroll
+            cards.forEach(card => {
+                scrollObserver.observe(card);
+            });
+
+            // AGGIORNAMENTO DINAMICO DELL'ORA
+            // Aggiungiamo un piccolo orologio che si aggiorna in tempo reale
+            function addClock() {
+                const clockElement = document.createElement('div');
+                clockElement.style.position = 'fixed';
+                clockElement.style.top = '20px';
+                clockElement.style.right = '20px';
+                clockElement.style.color = 'rgba(255, 255, 255, 0.8)';
+                clockElement.style.fontSize = '14px';
+                clockElement.style.fontWeight = 'bold';
+                clockElement.style.background = 'rgba(0, 0, 0, 0.2)';
+                clockElement.style.padding = '10px 15px';
+                clockElement.style.borderRadius = '20px';
+                clockElement.style.backdropFilter = 'blur(10px)';
+                clockElement.style.zIndex = '1000';
+
+                // Funzione per aggiornare l'orologio
+                function updateClock() {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('it-IT');
+                    clockElement.textContent = timeString;
+                }
+
+                // Aggiorniamo l'orologio ogni secondo
+                updateClock();
+                setInterval(updateClock, 1000);
+
+                // Aggiungiamo l'orologio alla pagina
+                document.body.appendChild(clockElement);
+            }
+
+            // Aggiungiamo l'orologio alla pagina
+            addClock();
+
+            // SALVATAGGIO DATI NEL BROWSER (LOCAL STORAGE)
+            // Nota: Questa funzionalità permetterebbe di salvare le modifiche localmente
+            // ma è commentata perché localStorage non è supportato negli artifact di Claude
+
+            /*
+            // Funzione per salvare i dati del portfolio
+            function savePortfolioData() {
+                const portfolioData = {
+                    name: document.querySelector('.profile-card .card-title').textContent,
+                    profession: document.querySelector('.profile-card .card-subtitle').textContent,
+                    description: document.querySelector('.profile-card .card-text').textContent,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                // Salvare nel localStorage
+                localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+            }
+            
+            // Funzione per caricare i dati salvati
+            function loadPortfolioData() {
+                const savedData = localStorage.getItem('portfolioData');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    // Qui potresti ripopolare i campi con i dati salvati
+                }
+            }
+            */
+
+            // CONSOLE LOG PER IL DEBUG
+            console.log('🚀 Portfolio Dashboard caricato con successo!');
+            console.log('💡 Personalizza il contenuto modificando l\'HTML');
+            console.log('🎨 Modifica i colori cambiando i valori dei gradienti CSS');
+            console.log('✨ Tutte le funzionalità JavaScript sono attive');
+        });
+
+        // FUNZIONI UTILITY PER PERSONALIZZAZIONI FUTURE
+
+        // Funzione per cambiare il tema colore
+        function changeColorTheme(primaryColor, secondaryColor) {
+            // Questa funzione permetterebbe di cambiare dinamicamente i colori del tema
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', primaryColor);
+            root.style.setProperty('--secondary-color', secondaryColor);
+        }
+
+        // Funzione per aggiungere nuove competenze
+        function addSkill(skillName) {
+            const skillsContainer = document.querySelector('.skills-list');
+            const newSkill = document.createElement('span');
+            newSkill.className = 'skill-tag';
+            newSkill.textContent = skillName;
+            newSkill.style.opacity = '0';
+            newSkill.style.transform = 'scale(0)';
+
+            skillsContainer.appendChild(newSkill);
+
+            // Animazione di entrata
+            setTimeout(() => {
+                newSkill.style.transition = 'all 0.3s ease';
+                newSkill.style.opacity = '1';
+                newSkill.style.transform = 'scale(1)';
+            }, 100);
+        }
+
+        // Funzione per aggiungere nuovi progetti
+        function addProject(title, description) {
+            const projectList = document.querySelector('.project-list');
+            const newProject = document.createElement('li');
+            newProject.className = 'project-item';
+            newProject.innerHTML = `
+                <div class="project-title">${title}</div>
+                <div class="project-description">${description}</div>
+            `;
+
+            newProject.style.opacity = '0';
+            newProject.style.transform = 'translateX(-20px)';
+
+            projectList.appendChild(newProject);
+
+            // Animazione di entrata
+            setTimeout(() => {
+                newProject.style.transition = 'all 0.5s ease';
+                newProject.style.opacity = '1';
+                newProject.style.transform = 'translateX(0)';
+            }, 100);
+        }
+
+        // ESEMPIO DI UTILIZZO DELLE FUNZIONI UTILITY
+        // Decommentare per testare le funzioni
+
+        // setTimeout(() => {
+        //     addSkill('TypeScript');
+        //     addSkill('Vue.js');
+        // }, 3000);
+
+        // setTimeout(() => {
+        //     addProject('Nuovo Progetto', 'Descrizione del nuovo progetto aggiunto dinamicamente');
+        // }, 4000);
+
+    </script>
+</body>
+
+</html>
